@@ -1,5 +1,6 @@
 var vars = require('../vars'),
     debug = require('../helpers/debug'),
+    regexUtils = require('../helpers/regex'),
     store = require('./store'),
     tmi = require('./tmi'),
     helpers = require('./helpers'),
@@ -9,7 +10,8 @@ var vars = require('../vars'),
     pinnedHighlights = require('../features/pinned-highlights'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
-    audibleFeedback = require('../features/audible-feedback');
+    audibleFeedback = require('../features/audible-feedback'),
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 // Helper Functions
 var getRgb = require('../helpers/colors').getRgb;
@@ -28,6 +30,13 @@ exports.commands = function(input) {
         }).fail(function() {
             helpers.serverMessage('Could not fetch chatter count.', true);
         });
+    } else if (command === '/followed') {
+        if (vars.userData.isLoggedIn) {
+            var chan = sentence.length > 1 ? sentence[1] : bttv.getChannel();
+            helpers.followDate(vars.userData.name, chan);
+        } else {
+            helpers.serverMessage('You need to be logged in to use this command', true);
+        }
     } else if (command === '/followers') {
         bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
             helpers.serverMessage('Current Followers: ' + Twitch.display.commatize(channel._total), true);
@@ -103,6 +112,7 @@ exports.commands = function(input) {
         helpers.serverMessage('BetterTTV Chat Commands:');
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
         helpers.serverMessage('/chatters -- Tells you how many users are currently in chat');
+        helpers.serverMessage('/followed -- Tells you for how long you have been following a channel');
         helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
@@ -350,6 +360,12 @@ var privmsg = exports.privmsg = function(channel, data) {
     if (data.tags && data.tags['display-name']) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
+
+    // filter blacklisted emojis
+    blacklistedEmoji.forEach(function(emoji) {
+        if (data.message) data.message = regexUtils.stripAll(data.message, emoji);
+        if (data.tags && data.tags['system-msg']) data.tags['system-msg'] = regexUtils.stripAll(data.tags['system-msg'], emoji);
+    });
 
     if (data.tags && data.tags['msg-id'] === 'resub') {
         message = templates.privmsg({

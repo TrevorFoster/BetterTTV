@@ -124,7 +124,10 @@ var takeover = module.exports = function() {
 
     // Load spammer list
     $.getJSON('https://api.betterttv.net/2/spammers').done(function(data) {
-        store.spammers = data.users;
+        store.spammers = [];
+        for (var i = 0; i < data.users.length; i++) {
+            store.spammers.push(data.users[i].name);
+        }
     });
     $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
         var user = $(this).parent().data('sender');
@@ -176,6 +179,18 @@ var takeover = module.exports = function() {
         });
         $(this).tipsy('show');
     }).off('mouseout', '.bttv-mod-card button').on('mouseout', '.bttv-mod-card button', function() {
+        $(this).tipsy('hide');
+        $('div.tipsy').remove();
+    });
+
+    // hover over emoji images
+    $('body').off('mouseover', '.chat-line .emoji').on('mouseover', '.chat-line .emoji', function() {
+        $(this).tipsy({
+            trigger: 'manual',
+            gravity: 's'
+        });
+        $(this).tipsy('show');
+    }).off('mouseout', '.chat-line .emoji').on('mouseout', '.chat-line .emoji', function() {
         $(this).tipsy('hide');
         $('div.tipsy').remove();
     });
@@ -350,8 +365,12 @@ var takeover = module.exports = function() {
         helpers.chatLineHistory($chatInput, e);
     });
     $chatSend.on('click', function(e) {
+        // Prevents Twitch's event handlers from running on this click
+        e.stopImmediatePropagation();
+
         var val = $chatInput.val().trim(),
             bttvCommand = false;
+
         if (!val.length) return;
 
         if (val.charAt(0) === '/') {
@@ -360,8 +379,6 @@ var takeover = module.exports = function() {
 
         if (!bttvCommand) {
             helpers.sendMessage(val);
-        } else {
-            e.stopPropagation();
         }
 
         if (bttv.settings.get('chatLineHistory') === true) {
