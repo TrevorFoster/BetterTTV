@@ -28,7 +28,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
     }
 
     if (tmi()) {
-        if (store.displayNames.hasOwnProperty(user)) {
+        if (Object.hasOwnProperty.call(store.displayNames, user)) {
             return store.displayNames[user] || user.capitalize();
         } else if (user !== 'jtv' && user !== 'twitchnotify') {
             return user.capitalize();
@@ -121,7 +121,7 @@ var completableEmotes = function() {
         var usableEmotes = tmi().tmiSession._emotesParser.emoticonRegexToIds;
 
         for (var emote in usableEmotes) {
-            if (!usableEmotes.hasOwnProperty(emote)) continue;
+            if (!Object.hasOwnProperty.call(usableEmotes, emote)) continue;
 
             if (usableEmotes[emote].isRegex === true) continue;
 
@@ -441,10 +441,9 @@ exports.sendMessage = function(message) {
         }
 
         if (containsCheer(message)) {
-            var model = bttv.getModel();
             var service = App && App.__container__.lookup('service:bits');
-            if (model && service) {
-                service.sendBits(model._id, message).then(function() {}, function(e) {
+            if (tmi().channel && service) {
+                service.sendBits(tmi().channel._id, message).then(function() {}, function(e) {
                     if (e.status === 401) {
                         var room = App.__container__.lookup('controller:room');
                         room.send('handleNotLoggedIn', {
@@ -624,7 +623,7 @@ var surrogateOffset = function(surrogates, index) {
     var offset = index;
 
     for (var id in surrogates) {
-        if (!surrogates.hasOwnProperty(id)) continue;
+        if (!Object.hasOwnProperty.call(surrogates, id)) continue;
         if (id < index) offset++;
     }
 
@@ -649,7 +648,7 @@ exports.handleSurrogatePairs = function(message, emotes) {
     // appears in the message, offsetting the indexes +1 for each
     // surrogate pair occurring before the index
     for (var id in emotes) {
-        if (!emotes.hasOwnProperty(id)) continue;
+        if (!Object.hasOwnProperty.call(emotes, id)) continue;
 
         var emote = emotes[id];
         for (i = emote.length - 1; i >= 0; i--) {
@@ -713,9 +712,8 @@ exports.loadTwitchBadges = function() {
             store.__twitchBadgeTypes[badge] = badgeData;
         });
 
-        var channelModel = bttv.getModel();
-        if (channelModel && channelModel.partner === true) {
-            $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + channelModel._id + '/display', function(badges) {
+        if (tmi().channel && tmi().channel.partner === true) {
+            $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
                 if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
                 var subBadge = data.badge_sets.subscriber.versions['1'];
                 var cssLine = '.badge.subscriber { background-image: url("' + subBadge.image_url_1x + '"); }';

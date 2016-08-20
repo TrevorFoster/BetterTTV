@@ -856,6 +856,10 @@ body {
     box-shadow: 0px -1px 0px rgba(255, 255, 255, 0.3) inset!important;
 }
 
+#main_col ul.nav.js-nav:before {
+    border-color: #676767;
+}
+
 #main_col .normal_button {
     background-color: rgb(30, 30, 30) !important;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset!important;
@@ -1887,7 +1891,8 @@ color: white;
 }
 
 /* Video Manager */
-.channel_new .app-main #directory-list #video-manager .videos-grid .video.item .meta {
+.channel_new .app-main #directory-list #video-manager .videos-grid .video.item .meta,
+#video-manager .videos-grid .video.item .meta {
     background: #1f1f1f;
 }
 
@@ -1963,8 +1968,7 @@ span.subscribe-text {
 }
 
 /* Twitch emote menu */
-
-.chat-container.dark .chat-interface .emoticon-selector .emoticon-selector-box, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-selector-box, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
+.chat-container.dark .chat-interface .emoticon-selector .emoticon-selector-box, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-selector-box, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector {
     background-color: #191919;
     border-color: #191919;
 }
@@ -1986,6 +1990,7 @@ span.subscribe-text {
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab:hover {
     border-color: #888;
 }
+
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .channel-emotes .subscribe-message {
     border-color: #444;
     color: #aaa;
@@ -1997,17 +2002,17 @@ span.subscribe-text {
     color: #888;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input {
+.emoticon-selector .emoticon-selector-box input {
     background-color: #282828;
     border-color: #444;
     color: #d3d3d3;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input:focus {
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input:focus, .emoticon-selector-container .emoticon-selector .emoticon-selector-box input:focus {
     box-shadow: 0 0 3px 1px #333;
 }
 
-.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb {
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-thumb, .conversation-content::-webkit-scrollbar-thumb, .conversations-list-inner::-webkit-scrollbar-thumb {
   background: rgba(255,255,255,0.7) !important;
 }
 
@@ -2072,9 +2077,15 @@ span.subscribe-text {
     color: #d3d3d3;
 }
 
-#highlighter .highlight-content .form-container li input, #highlighter .highlight-content .form-container li textarea {
+#highlighter .highlight-content .form-container li input,
+#highlighter .highlight-content .form-container li textarea {
     background: #303030;
     color: #d3d3d3;
+    border-color: #676767;
+}
+
+#highlighter .created-highlights {
+    border-color: #676767;
 }
 
 /* playlists */
@@ -2274,6 +2285,12 @@ span.subscribe-text {
 
 .conversation-window .new-message-divider span {
     background-color: #232323;
+}
+
+/* Conversations Emote menu */
+.conversations-content .emoticon-selector .tabs .tab.active {
+    color: #d3d3d3;
+    border-top: 1px solid #d3d3d3;
 }
 
 /* Fix for white hover */
@@ -2566,7 +2583,7 @@ ul.tabs li a:hover {
 }
 
 #emote-menu-button {
-    background-color: rgb(30,30,30);
+    background-color: rgb(30,30,30) !important;
 }
 
 ul.tabs li.selected a, .directory_header .nav li.selected a, ul.tabs li.selected button, .directory_header .nav li.selected button, ul.tabs_fake li.selected a, ul.tabs_fake li.selected button {
@@ -2651,4 +2668,55 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 /* chat notice style */
 .chat-lines .notice {
     background: #392E5C !important;
+}
+
+/* darken new search */
+#search-panel {
+    background: #222;
+    border: none;
+}
+
+#search-panel .titleBar,
+#search-panel .titleBar .titleBar__back {
+    border-color: #555;
+}
+
+#search-panel .titleBar .titleBar__back:hover {
+    background: #444;
+}
+
+#search-panel .titleBar,
+#search-panel .titleBar .titleBar__title,
+#search-panel .resultView__titlesep {
+    background: #333;
+    color: #d3d3d3;
+}
+
+#search-panel .resultView .card .card__layout .card__title {
+    color: #d3d3d3;
+}
+
+#search-panel .resultView .card .card__layout .card__info span {
+    color: #999;
+}
+
+#search-panel .resultView .card .card__layout.isActive:before {
+    background: #333;
+}
+
+#search-panel .resultView__titlesep .pill,
+#search-panel .resultView__titlesep.isActive .pill {
+    background-color: #555;
+}
+
+#search-panel .resultView__titlesep .resultView__titleMore {
+    color: #777;
+}
+
+#search-panel .resultView__titlesep.isActive .resultView__titleMore {
+    color: #999;
+}
+
+#search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.7);
 }
